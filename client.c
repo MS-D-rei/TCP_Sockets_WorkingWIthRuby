@@ -22,6 +22,7 @@
 #include <netinet/in.h> /* for sockaddr_in, in_addr */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h> /* for strlen */
 #include <sys/socket.h>
 #include <unistd.h> /* for close */
 
@@ -96,7 +97,9 @@ int main(void) {
 
     /* Sending data to the server */
     /* ssize_t send(int socket, const void *buffer, size_t length, int flags) */
-    if (send(socket_fd, "Hello, server!", 14, 0) == -1) {
+    char *message = "Hello, server!";
+    size_t message_length = strlen(message);
+    if (send(socket_fd, message, message_length, 0) == -1) {
         perror("send() failed");
         return EXIT_FAILURE;
     }
