@@ -4,7 +4,7 @@
 #include <sys/socket.h> /* for socket, bind, listen, accept, shutdown */
 #include <unistd.h>     /* for close */
 
-int main() {
+int main(void) {
     /* Creating a socket */
     /* https://www.gnu.org/software/libc/manual/html_node/Creating-a-Socket.html
      */
@@ -92,9 +92,24 @@ int main() {
             perror("socket accept failed");
             return EXIT_FAILURE;
         }
-
         printf("Connection accepted\n");
         printf("Accept socket fd: %d\n", accept_socket_fd);
+
+        /* Receiving data */
+        /* https://www.gnu.org/software/libc/manual/html_node/Receiving-Data.html */
+        /* There are two functions to receive data: read() and recv() */
+        /* ssize_t read(int file_descriptor, void *buffer, size_t size) */
+        /* read() returns the number of bytes read, 0 if end of file, and -1 if an error occurs */
+        /* https://www.gnu.org/software/libc/manual/html_node/I_002fO-Primitives.html */
+        /* ssize_t recv(int socket, void *buffer, size_t size, int flags) */
+        /* recv() returns the number of bytes received, and -1 if an error occurs */
+        /* if flags is 0, recv() is equivalent to read() */
+        char buffer[1024];
+        if (recv(accept_socket_fd, buffer, sizeof(buffer), 0) == -1) {
+            perror("recv() failed");
+            return EXIT_FAILURE;
+        }
+        fprintf(stdout, "Data received: %s\n", buffer);
 
         /* Shutdown the socket */
         /* https://www.gnu.org/software/libc/manual/html_node/Closing-a-Socket.html */
@@ -102,7 +117,8 @@ int main() {
         /* shutdown tries to fully shut down the communication on the current socket
          * and other copies of it.*/
         /* However, shutdown does not reclaim resources used by the socket. */
-        shutdown(accept_socket_fd, 2);
+        shutdown(accept_socket_fd, SHUT_RDWR);
+        printf("Socket shutdown\n");
 
         /* Closing the socket */
         /* https://www.gnu.org/software/libc/manual/html_node/Opening-and-Closing-Files.html */
@@ -112,5 +128,6 @@ int main() {
          */
         /* But if there are copies of the file descriptor, the resources are not reclaimed */
         close(accept_socket_fd);
+        printf("Socket closed\n");
     }
 }
