@@ -1,9 +1,8 @@
+#include <netinet/in.h> /* for sockaddr_in */
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/socket.h>
-/* https://www.gnu.org/software/libc/manual/html_node/Sockets.html */
-#include <netinet/in.h>
-#include <unistd.h> /* for close */
+#include <sys/socket.h> /* for socket, bind, listen, accept, shutdown */
+#include <unistd.h>     /* for close */
 
 int main() {
     /* Creating a socket */
@@ -109,7 +108,8 @@ int main() {
         /* https://www.gnu.org/software/libc/manual/html_node/Opening-and-Closing-Files.html */
         /* close(int file_descriptor) */
         /* If the file descriptor is successfully closed, close() returns 0. Otherwise return -1 */
-        /* close() reclaim resources that the operating system has allocated to the file descriptor */
+        /* close() reclaim resources that the operating system has allocated to the file descriptor
+         */
         /* But if there are copies of the file descriptor, the resources are not reclaimed */
         close(accept_socket_fd);
     }
